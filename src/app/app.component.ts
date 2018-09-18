@@ -1,8 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {Observable, Subject} from 'rxjs';
-import {WebcamImage} from "./modules/webcam/domain/webcam-image";
-import {WebcamUtil} from "./modules/webcam/util/webcam.util";
-import {WebcamInitError} from "./modules/webcam/domain/webcam-init-error";
+import {WebcamImage} from "./content/webcam/domain/webcam-image";
+import {WebcamUtil} from "./content/webcam/util/webcam.util";
+import {WebcamInitError} from "./content/webcam/domain/webcam-init-error";
 
 @Component({
   selector: 'app-root',
@@ -11,47 +11,52 @@ import {WebcamInitError} from "./modules/webcam/domain/webcam-init-error";
 })
 export class AppComponent implements OnInit {
   // toggle webcam on/off
-  public showWebcam = true;
+   showWebcam = true;
   slect:any =[];
-  public allowCameraSwitch = true;
-  public multipleWebcamsAvailable = false;
-  public deviceId: any;
+   allowCameraSwitch = true;
+   multipleWebcamsAvailable = false;
+   isMiddleDivVisible: boolean = false;
+   deviceId: any;
+   registerForm = false
   timeLeft: number = 3;
   interval;
   videosrc:any;
+  percent : number = 0;
   captures : Array<any> =[] ;
-  public videoOptions: MediaTrackConstraints = {
+   videoOptions: MediaTrackConstraints = {
     //width: {ideal: 1024},
     //height: {ideal: 576}
   };
-  public errors: WebcamInitError[] = [];
+   errors: WebcamInitError[] = [];
 
   // latest snapshot
-  public webcamImage: WebcamImage = null;
+   webcamImage: WebcamImage = null;
 
   // webcam snapshot trigger
   private trigger: Subject<void> = new Subject<void>();
   // switch to next / previous / specific webcam; true/false: forward/backwards, string: deviceId
   private nextWebcam: Subject<boolean|string> = new Subject<boolean|string>();
 
-  public ngOnInit(): void {
+   ngOnInit() {
     WebcamUtil.getAvailableVideoInputs()
       .then((mediaDevices: MediaDeviceInfo[]) => {
         this.multipleWebcamsAvailable = mediaDevices && mediaDevices.length > 1;
       });
   }
 
-  public triggerSnapshot(): void {
+   triggerSnapshot() {
 
     this.interval = setInterval(() => {
       if(this.timeLeft > 0) {
         this.timeLeft--;
+        this.percent ++;
+        this.isMiddleDivVisible =true;
+        this.registerForm =true
+      } else if(this.percent === 3) {
         this.trigger.next();
-      } else {
-        this.timeLeft = 3;
-
+        this.isMiddleDivVisible =false
       }
-      if ( this.timeLeft === 3){
+      if (this.captures.length === 3){
         clearInterval(this.interval);
       }
 
@@ -60,15 +65,16 @@ export class AppComponent implements OnInit {
 
   }
 
-  public toggleWebcam(): void {
+   toggleWebcam() {
     this.showWebcam = !this.showWebcam;
+    
   }
 
-  public handleInitError(error: WebcamInitError): void {
+   handleInitError(error: WebcamInitError) {
     this.errors.push(error);
   }
 
-  public showNextWebcam(directionOrDeviceId: boolean|string): void {
+   showNextWebcam(directionOrDeviceId: boolean|string) {
     // true => move forward through devices
     // false => move backwards through devices
     // string => move to device with given deviceId
@@ -76,30 +82,34 @@ export class AppComponent implements OnInit {
     this.slect = this.nextWebcam.next(directionOrDeviceId);
   }
 
-  public handleImage(webcamImage: WebcamImage): void {
+   handleImage(webcamImage: WebcamImage) {
     console.info("received webcam image", webcamImage);
     this.webcamImage = webcamImage;
     this.captures.push(this.webcamImage);
     console.log(this.captures);
   }
 
-  public cameraWasSwitched(deviceId: string) {
+   cameraWasSwitched(deviceId: string) {
     console.log("active device: " + deviceId);
     this.deviceId=deviceId;
 
   }
 
-  public get triggerObservable(): Observable<void> {
+   get triggerObservable(): Observable<void> {
     return this.trigger.asObservable();
   }
 
-  public get nextWebcamObservable(): Observable<boolean|string> {
+   get nextWebcamObservable(): Observable<boolean|string> {
     return this.nextWebcam.asObservable();
   }
 
   save_image (){
     try {
-      localStorage.setItem("slim",this.captures.toString());
+// Stores the JavaScript object as a string
+localStorage.setItem("slim", JSON.stringify(this.captures));
+
+// Parses the saved string into a JavaScript object again 
+JSON.parse(localStorage.getItem("slim"));
   }
   catch (e) {
       console.log("Storage failed: " + e);

@@ -9,9 +9,10 @@
             [videoOptions]="videoOptions"
             (cameraSwitched)="cameraWasSwitched($event)"
             (initError)="handleInitError($event)"
-    ></webcam>
+    >
+  </webcam>
     <br/>
-    <button class="actionBtn" (click)="triggerSnapshot();">Take A Snapshot</button>
+    <button class="actionBtn" (click)="triggerSnapshot();" [disabled]="registerForm">Take A Snapshot</button>
     <button class="actionBtn" (click)="toggleWebcam();">Toggle Webcam</button>
     <button class="actionBtn" (click)=" save_image();">save_image</button>
     <br/>
@@ -32,16 +33,27 @@
   </div>
 <div class="snapshot" *ngIf="webcamImage">
   <h2>Nice one!</h2>
-  <img [src]="webcamImage.imageAsDataUrl"/>
+  <ul>
+    <li *ngFor="let a of captures">
+        <img [src]="a.imageAsDataUrl"/>
+    </li>
+    </ul>
 </div>
-<ul>
-<li *ngFor="let a of captures">
-    <img [src]="a.imageAsDataUrl"/>
-</li>
-</ul>
+
 <h4 *ngIf="errors.length > 0">Messages:</h4>
 <ul *ngFor="let error of errors">
   <li>{{error | json}}</li>
 </ul>
 
 
+<circle-progress
+  [percent]="percent"
+  [outerStrokeWidth]="16"
+  [innerStrokeWidth]="8"
+  [outerStrokeColor]="'#78C000'"
+  [innerStrokeColor]="'#C7E596'"
+  [animation]="true"
+  [animationDuration]="300"
+  [showSubtitle] ="false"
+  [style.visibility]="isMiddleDivVisible ? 'visible' : 'hidden'"
+></circle-progress>

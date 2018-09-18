@@ -1,15 +1,12 @@
-# Ngx-Webcam [![npm version](https://badge.fury.io/js/ngx-webcam.svg)](https://badge.fury.io/js/ngx-webcam) [![Build Status](https://travis-ci.org/basst314/ngx-webcam.svg?branch=master)](https://travis-ci.org/basst314/ngx-webcam)
+# angular camera  loop capture save  in  localstorage
 
-A simple Angular 4+ Webcam-Component. Pure &amp; minimal, no Flash-Fallback. <a href="https://basst314.github.io/ngx-webcam/?" target="_blank">See the Demo!</a>
+A simple Angular 6+ Webcam-Component. Pure &amp; minimal, no Flash-Fallback
 
-**Plug-and-play.** This library contains a single webcam-module which can be imported into nearly every Angular 4+ project.
+**Plug-and-play.** This library contains a single webcam-module which can be imported into nearly every Angular 6 project.
 
 **Simple to use.** The one component gives you full control and lets you take snapshots via actions and event bindings.
 
 **Minimal.** No unnecessary Flash-fallbacks, no bundle-size bloating.
-
-## Demo
-Try out the <a href="https://basst314.github.io/ngx-webcam/?" target="_blank">Live-Demo</a> or see the <a href="https://github.com/basst314/ngx-webcam-demo" target="_blank">Demo-Project</a>.
 
 ## Features
 * Webcam live view
@@ -80,7 +77,7 @@ This section describes the basic inputs/outputs of the component. All inputs are
 Here you can find instructions on how to start developing this library.
 
 ### Build
-Run `npm run packagr` to build the library. The build artifacts will be stored in the `dist/` directory.
+Run `npm run package` to build the library. The build artifacts will be stored in the `dist/` directory.
 
 ### Start
 Run `npm start` to build and run the surrounding webapp with the `WebcamModule`. Essential for live-developing.
@@ -90,3 +87,5 @@ Run `npm run docs` to generate the live-demo documentation pages in the `docs/` 
 
 ### Running Unit Tests
 Run `npm run test` to run unit-tests.
+  
+  // copyright abshore
